@@ -1,0 +1,699 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>3D Chess Intro Demo</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+html,body{
+  margin:0;
+  height:100%;
+  /*background:#0b1220;*/
+  color:#e6eef6;
+  font-family:Arial, sans-serif;
+}
+canvas{
+  background-image: url('assets/img/my.gif');
+  height: 500px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  position:fixed;
+  inset:0;
+  z-index:0;
+   background: linear-gradient(to bottom, #0b0b2b, #1b2735 70%, #090a0f);
+   background: linear-gradient(to bottom, #2e231a, #d7b434 70%, #220e00);
+   background: linear-gradient(to bottom, #3d1c00, #3d002c 70%, #5e5b5a);
+   background: linear-gradient(to bottom, #44301d, #220e00 70%, #000000);
+   background: radial-gradient(circle, #44301d, #220e00 70%, #000000);
+}
+
+section {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: flex-start;
+  justify-content: flex-start;
+  pointer-events: none;
+  background-color: #1b1209;
+}
+.detail{
+  width:50%;
+  z-index: 6;
+  margin: 5%;
+}
+.detail h2 , .detail h1{
+  font-size: 3rem;
+   z-index: 10;
+   color: #d7b434;
+   font-family: serif;
+}
+.detail h2:hover,.square-focus:hover{
+  color: red;
+}
+.square-focus {
+  width: fit-content;
+  height: fit-content;
+  box-shadow: 0 0 40px rgba(255, 200, 0, 0.7);
+  pointer-events: none;
+  z-index: 5;
+  transition: all 0.6s ease;
+  padding: 2px;
+  background: #c0903c21;
+}
+ .detail p {
+  opacity: 0.85;
+   z-index: 1;
+}
+.story span{
+   color: #d7b434;
+   width:  fit-content;
+   height: fit-content;
+   padding: 10px;
+    font-family: serif;
+    font-size: large;
+}
+.tip,.value{
+    display: flex;
+    align-content: center;
+    padding: 2px;
+    border: 2px solid #45301b;
+    border-radius: 11px;
+    box-shadow: inset 7px 4px 6px 8px rgb(0 0 0 / 60%);
+    margin: 3px 3px;
+    width: 50%;
+}
+.movement{
+  display: flex;
+    align-content: center;
+    padding: 2px;
+    border: 2px solid #45301b;
+    border-radius: 11px;
+    box-shadow: inset 7px 4px 6px 8px rgb(0 0 0 / 60%);
+    margin: 3px auto;
+  width:100%;
+  min-height: 70px;
+}
+
+.nav {
+      position: fixed;
+      top: 0;
+      display: flex;
+      align-items: center;
+      width: 100%;
+      background: #111;
+      padding: 10px;
+      z-index: 10;
+      height: 7%;
+      justify-content: space-around;
+    }
+.topnav {
+  overflow: hidden;
+  background-color: #333;
+}
+
+.topnav a {
+  float: left;
+  display: block;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+
+.topnav .icon {
+  display: none;
+}
+
+.dropdown {
+  float: left;
+  overflow: hidden;
+}
+
+.dropdown .dropbtn {
+  font-size: 17px;    
+  border: none;
+  outline: none;
+  color: white;
+  padding: 14px 16px;
+  background-color: inherit;
+  font-family: inherit;
+  margin: 0;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+   background-color: #1b1209;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  float: none;
+  color: rgb(255, 255, 255);
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  text-align: left;
+  
+}
+
+.topnav a:hover, .dropdown:hover .dropbtn {
+  background-color: #53371b;
+  color: rgb(232, 166, 53);
+}
+
+.dropdown-content a:hover {
+  background-color: #442303;
+  color: rgb(232, 166, 53);
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+@media screen and (max-width: 600px) {
+  .topnav a:not(:first-child), .dropdown .dropbtn {
+    display: none;
+  }
+  .topnav a.icon {
+    float: right;
+    display: block;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .topnav.responsive {position: relative;}
+  .topnav.responsive .icon {
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+  .topnav.responsive a {
+    float: none;
+    display: block;
+    text-align: left;
+  }
+  .topnav.responsive .dropdown {float: none;}
+  .topnav.responsive .dropdown-content {position: relative;}
+  .topnav.responsive .dropdown .dropbtn {
+    display: block;
+    width: 100%;
+    text-align: left;
+  }
+}
+</style>
+</head>
+
+<body>
+<div class="nav">
+  <h2 style="color: #d7b434;font-size:2.3rem; font-family:serif;">♔ 3D Royal Chess</h2>
+
+<br>
+<div class="topnav" id="myTopnav">
+  <div class="dropdown">
+    <button class="dropbtn">PIECES 
+      <i class="fa fa-caret-down"></i>
+    </button>
+    <div class="dropdown-content">
+      <a href="#king">KING(♔/♚)</a>
+      <a href="#queen">QUEEN(♕/♛)</a>
+      <a href="#rook">ROOK(♖/♜)</a>
+      <a href="#bishop">BISHOP(♗/♝)</a>
+      <a href="#knight">KNIGHT (♘/♞)</a>
+      <a href="#pawn">PAWN(♙/♟)</a>
+    </div>
+  </div> 
+  <div class="dropdown">
+    <button class="dropbtn">Play 
+      <i class="fa fa-caret-down"></i>
+    </button>
+    <div class="dropdown-content">
+      <a href="index.html">Online with Friend</a>
+      <a href="#">Play with bot</a>
+      <a href="#">2 player same screen</a>
+    </div>
+  </div> 
+  <a href="#about">About</a>
+  <a href="javascript:void(0);" style="font-size:15px;" class="icon" onclick="myFunction()">&#9776;</a>
+</div>
+</div>
+
+<section id="introu">
+</section>
+<section class="story" id="intro">
+      <div class="detail" style="display: flex; flex-direction: column;width: 100%;">  
+            <h2 style="font-size: 5rem;">Chess Online Perfect</h2>
+            <div class="movement" style="flex-wrap: wrap;flex-direction: column;justify-content: center;align-items: center;width: fit-content;">
+    <span style="font-size: 3rem;text-align: center;color: #f2f2f2;">Welcome to 3D Chess</span>
+    </div>
+   <div class="movement" style="flex-wrap: wrap;flex-direction: column;justify-content: center;align-items: center;width: fit-content;">
+    <span style="font-size: 3rem;">Experience Chess in True 3D</span>
+    </div>
+  </div>
+</section>
+  <section  id="gap"></section>
+<section class="story" id="king">
+    <div class="detail" style="display: flex; flex-direction: column;">  
+    <h2><div id="squareFocus" class="square-focus" style="padding: 10px 25px;border-radius: 15px;"> ♔ The King </div></h2>
+    <p style="font-weight: 700;font-size: large;">The most important piece on the board.
+      The entire game revolves around protecting your King while threatening your opponent's.
+      When the King is trapped with no escape, the game is over.
+    </p>
+    <div class="movement">
+    <span>MOVEMENT</span>
+    <p>Moves one square in any direction: horizontally, vertically, or diagonally.</p>
+    </div>
+    <div class="box" style="display: flex;">
+    <div class="value">
+      <span>VALUE</span>
+        <p>Infinite - The game ends if captured</p>
+    </div>
+    <div class="tip">
+      <span>TIP</span>
+        <p>Keep your King safe behind a wall of pawns in the opening. Castle early to protect him.</p>
+    </div>
+    </div>
+  </div>
+  </section>
+    <section  id="gap1"></section>
+  <section class="story" id="queen">
+    <div class="detail" style="display: flex; flex-direction: column;">  
+    <h2><div id="squareFocus" class="square-focus" style="padding: 10px 25px;border-radius: 15px;"> ♛ The Queen </div></h2>
+    <p style="font-weight: 700;font-size: large;">The most powerful piece in chess, combining the movement of both the Rook and Bishop.
+       A Queen in the center of the board can control up to 27 squares
+    </p>
+    <div class="movement">
+    <span>MOVEMENT</span>
+    <p>Moves any number of squares horizontally, vertically, or diagonally.</p>
+    </div>
+    <div class="box" style="display: flex;">
+    <div class="value">
+      <span>VALUE</span>
+        <p>9 points</p>
+    </div>
+    <div class="tip">
+      <span>TIP</span>
+        <p>Don't bring your Queen out too early - she can become a target for your opponent's minor pieces.</p>
+    </div>
+    </div>
+  </div>
+  </section>
+
+   <section  id="gap2" ></section>
+  <section class="story" id="rook">
+    <div class="detail" style="display: flex; flex-direction: column;">  
+    <h2><div id="squareFocus" class="square-focus" style="padding: 10px 25px;border-radius: 15px;"> ♖ The Rook </div></h2>
+    <p style="font-weight: 700;font-size: large;">A powerful major piece that dominates open files and ranks.
+      Two Rooks working together can deliver devastating attacks and are particularly strong in the endgame.
+    </p>
+    <div class="movement">
+    <span>MOVEMENT</span>
+    <p>Moves any number of squares horizontally or vertically.</p>
+    </div>
+    <div class="box" style="display: flex;">
+    <div class="value">
+      <span>VALUE</span>
+        <p>5 points</p>
+    </div>
+    <div class="tip">
+      <span>TIP</span>
+        <p>Activate your Rooks by placing them on open files. Connected Rooks on the 7th rank are extremely powerful.</p>
+    </div>
+    </div>
+  </div>
+  </section>
+
+   <section  id="gap3"></section>
+
+ <section class="story" id="bishop">
+    <div class="detail" style="display: flex; flex-direction: column;">  
+    <h2><div id="squareFocus" class="square-focus" style="padding: 10px 25px;border-radius: 15px;"> ♗ The Bishop </div></h2>
+    <p style="font-weight: 700;font-size: large;">A long-range piece that can sweep across the board in an instant. 
+      Each player starts with two Bishops - one on light squares, one on dark squares.
+      They never change color.
+    </p>
+    <div class="movement">
+    <span>MOVEMENT</span>
+    <p>Moves any number of squares diagonally.</p>
+    </div>
+    <div class="box" style="display: flex;">
+    <div class="value">
+      <span>VALUE</span>
+        <p>3 points</p>
+    </div>
+    <div class="tip">
+      <span>TIP</span>
+        <p>The Bishop pair is powerful in open positions.
+Place Bishops on long diagonals for maximum impact.</p>
+    </div>
+    </div>
+  </div>
+ </section>
+ 
+    <section  id="gap4"></section>
+
+
+<section class="story" id="knight">
+    <div class="detail" style="display: flex; flex-direction: column;">  
+    <h2><div id="squareFocus" class="square-focus" style="padding: 10px 25px;border-radius: 15px;"> ♘ The Knight </div></h2>
+    <p style="font-weight: 700 ;font-size: 1.2rem; ">The only piece that can jump over others. 
+      Its unique L-shaped movement makes it tricky to use but deadly in closed positions where other pieces struggle to maneuver.
+    </p>
+    <div class="movement">
+    <span>MOVEMENT</span>
+    <p style="font-weight: 700; ">Moves in an L-shape: two squares in one direction, then one square perpendicular.</p>
+    </div>
+    <div class="box" style="display: flex;">
+    <div class="value">
+      <span>VALUE</span>
+        <p>3 points</p>
+    </div>
+    <div class="tip">
+      <span>TIP</span>
+        <p>Knights are strongest in the center and weak on the edges. A Knight on the rim is dim!</p>
+    </div>
+    </div>
+  </div>
+</section>
+
+
+  <section  id="gap5"></section>
+
+
+<section class="story" id="pawn">
+    <div class="detail" style="display: flex; flex-direction: column;">  
+    <h2><div id="squareFocus" class="square-focus" style="padding: 10px 25px;border-radius: 15px;"> ♙ The Pawn </div></h2>
+    <p style="font-weight: 700;font-size: large;">The soul of chess. Though individually weak, pawns form the structure around which all strategy is built.
+       A pawn reaching the opposite end of the board transforms into any piece except the King.
+    </p>
+    <div class="movement">
+    <span>MOVEMENT</span>
+    <p>Moves forward one square (two squares on first move). Captures diagonally.</p>
+    </div>
+    <div class="box" style="display: flex;">
+    <div class="value">
+      <span>VALUE</span>
+        <p>1 point</p>
+    </div>
+    <div class="tip">
+      <span>TIP</span>
+        <p>Pawn structure is crucial. Avoid creating isolated or doubled pawns that become weaknesses.</p>
+    </div>
+    </div>
+  </div>
+</section>
+<section class="story" id="end">
+      <div class="detail" style="display: flex; flex-direction: column;width: 100%;">  
+            <h2 style="font-size: 4rem;">lets Play</h2>
+            <div class="movement" style="flex-wrap: wrap;flex-direction: column;justify-content: center;align-items: center;width: fit-content;">
+    <span style="font-size: 2rem;text-align: center;color: #f2f2f2;">
+      <h2><div id="squareFocus" class="square-focus" style="padding: 10px 25px;border-radius: 15px;font-size: 2rem;">
+        * Play with Friend online *
+      </div></h2>
+      <h2><div id="squareFocus" class="square-focus" style="padding: 10px 25px;border-radius: 15px;font-size: 2rem">
+        * Play with Friendly Bots *
+      </div></h2>
+      <h2><div id="squareFocus" class="square-focus" style="padding: 10px 25px;border-radius: 15px;font-size: 2rem">
+        * Play with Friendly same PC *</div></h2>
+    </span>
+    </div>
+   <div class="movement" style="flex-wrap: wrap;flex-direction: column;justify-content: center;align-items: center;width: fit-content;">
+    <span style="font-size: 3rem;">Experience Chess in True 3D</span>
+    </div>
+  </div>
+</section>
+
+<script type="module">
+import * as THREE from "https://esm.sh/three@0.158.0";
+import { GLTFLoader } from "https://esm.sh/three@0.158.0/examples/jsm/loaders/GLTFLoader.js";
+import gsap from "https://esm.sh/gsap@3";
+import ScrollTrigger from "https://esm.sh/gsap@3/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
+
+/* ---------------- SCENE ---------------- */
+const scene = new THREE.Scene();
+scene.background = null;
+
+/* ---------------- CAMERA ---------------- */
+const camera = new THREE.PerspectiveCamera(45, innerWidth/innerHeight, 0.1, 100);
+camera.position.set(0, 9, 11);
+camera.lookAt(0, 1, 0);
+
+/* ---------------- RENDERER ---------------- */
+const renderer = new THREE.WebGLRenderer({alpha: true,antialias:true});
+renderer.setSize(innerWidth, innerHeight);
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+document.body.appendChild(renderer.domElement);
+
+/* ---------------- LIGHTS ---------------- */
+scene.add(new THREE.AmbientLight(0xffffff,0.6));
+const sun = new THREE.DirectionalLight(0xffffff,1.2);
+sun.position.set(10,20,10);
+scene.add(sun);
+
+/* ---------------- BOARD ---------------- */
+const boardGroup = new THREE.Group();
+const tileGeo = new THREE.BoxGeometry(1,0.3,1);
+
+for(let x=0;x<8;x++){
+  for(let z=0;z<8;z++){
+    const dark = (x+z)%2;
+    const mat = new THREE.MeshStandardMaterial({
+      color: dark ? 0x937053 : 0xc5b294
+    });
+    const tile = new THREE.Mesh(tileGeo, mat);
+    tile.position.set(x-3.5, 0.6, z-3.5);
+    boardGroup.add(tile);
+  }
+}
+scene.add(boardGroup);
+
+const base = new THREE.Mesh(
+  new THREE.BoxGeometry(9.2,0.4,9.2),
+  new THREE.MeshStandardMaterial({color:0x070d14})
+);
+base.position.y = 0.4;
+scene.add(base);
+
+/* ---------------- GROUPS (IMPORTANT) ---------------- */
+const demoPiecesGroup = new THREE.Group();   // autoplay game
+const focusPieceGroup = new THREE.Group();   // falling pieces
+scene.add(demoPiecesGroup);
+scene.add(focusPieceGroup);
+
+/* ---------------- MODELS ---------------- */
+const loader = new GLTFLoader();
+const models = {};
+
+async function loadModel(key){
+  return new Promise(res=>{
+    loader.load(`./models/${key}.glb`, g=>{
+      const m = g.scene;
+      m.scale.setScalar(1);
+      res(m);
+    });
+  });
+}
+
+async function loadAll(){
+  for(const k of ["k","q","r","b","n","p"]){
+    models[k] = await loadModel(k);
+  }
+}
+
+/* ---------------- DEMO GAME ---------------- */
+const START_POSITIONS = [
+  // White pieces
+  ["r",0.2,0.5,"w"],["n",1,0.5,"w"],["b",2,0,"w"],["q",3,0,"w"],
+  ["k",4,0.5,"w"],["b",5,0,"w"],["n",6,0,"w"],["r",7,0,"w"],
+  ["p",0,1,"w"],["p",1,1,"w"],["p",2,1,"w"],["p",3,1,"w"],
+  ["p",4,1,"w"],["p",5,1,"w"],["p",6,1,"w"],["p",7,1,"w"],
+
+  // Black pieces
+  ["r",0,7,"b"],["n",1,7,"b"],["b",2,7,"b"],["q",3,7,"b"],
+  ["k",4,7,"b"],["b",5,7,"b"],["n",6,7,"b"],["r",7,7,"b"],
+  ["p",0,6,"b"],["p",1,6,"b"],["p",2,6,"b"],["p",3,6,"b"],
+  ["p",4,6,"b"],["p",5,6,"b"],["p",6,6,"b"],["p",7,6,"b"],
+];
+const pieceMap = {}; // e.g. "wp_e2", "bn_g8"
+const PIECE_SCALE = {k: 0.7, q: 0.68, r: 0.65,b: 0.65, n: 0.55, p: 0.50};
+/* ---------------- MATERIAL UTILS ---------------- */
+function applyColor(model, colorHex){
+  model.traverse(o=>{
+    if(o.isMesh){
+      o.material = o.material.clone();
+      o.material.color.setHex(colorHex);
+      o.material.metalness = 0.25;
+      o.material.roughness = 0.55;
+      o.castShadow = true;
+      o.receiveShadow = true;
+    }
+  });
+}
+
+function spawnDemoPiece(type, x, z){
+  const m = models[type].clone();
+  m.position.set(x-3.5, 1.1, z-3.5);
+  demoPiecesGroup.add(m);
+  return m;
+}
+function startDemo(){
+  demoPiecesGroup.clear();
+  Object.keys(pieceMap).forEach(k=>delete pieceMap[k]);
+
+  START_POSITIONS.forEach(([type,x,z,color])=>{
+    const piece = models[type].clone();
+
+    applyColor(piece, color==="w" ? 0xffffff : 0x111111);
+
+    piece.position.set(
+      x - 3.5,
+      1.1,
+      z - 3.2
+    );
+    //piece.scale.setScalar(1);
+    piece.scale.setScalar(1.5 * PIECE_SCALE[type]);
+    demoPiecesGroup.add(piece);
+  
+    // create stable ID (example: wp_e2)
+    const file = "abcdefgh"[x];
+    const rank = color==="w" ? z+1 : z+1;
+    const id = `${color}${type}_${file}${rank}`;
+    pieceMap[id] = piece;
+  });
+
+  playDemoGame();
+}
+function squareToWorld(file, rank){
+  return {
+    x: "abcdefgh".indexOf(file) - 3.5,
+    y: 1.1,
+    z: rank - 1 - 3.5
+  };
+}
+function playDemoGame(){
+  const pawnW = pieceMap["wp_e2"];
+  const pawnB = pieceMap["bp_e7"];
+  const knight = pieceMap["wn_g1"];
+
+  if(!pawnW || !pawnB || !knight) return;
+
+  // 1. e2 → e4
+  gsap.to(pawnW.position,{
+    ...squareToWorld("e",4.5),
+    duration:1,
+    delay:1,
+    ease:"power2.out"
+  });
+
+  // ... e7 → e5
+  gsap.to(pawnB.position,{
+    ...squareToWorld("e",5.5),
+    duration:1,
+    delay:2,
+    ease:"power2.out"
+  });
+
+  // 2. Ng1 → f3
+  gsap.to(knight.position,{
+    ...squareToWorld("f",3.5),
+    duration:1,
+    delay:3,
+    ease:"power2.out"
+  });
+}
+
+
+function shift(){
+boardGroup.position.set(-15, -7.2,5);
+base.position.set(-15, -7 ,5.2);
+camera.position.set(5, -3, -5.3);
+camera.lookAt(-5, -2.5, -5);
+// Create helper (size 5 units)
+
+//const axesHelper1 = new THREE.AxesHelper(5);
+//axesHelper1.position.set(-5, -2.5, -5);
+//scene.add(axesHelper1);
+}
+/*---------------- FALLING PIECES ---------------- */
+function dropPiece(type){
+  focusPieceGroup.clear();
+  try{
+  const p = models[type].clone();
+  p.position.set(-5,9, 1.6); // start higher for weight
+  focusPieceGroup.add(p);
+
+  let X= type;
+  let s;
+  if(type == "n"|| type == "p")
+  {
+    if(type == "n")
+    {
+      s=-3.1;
+      p.position.set(-6,8, 1.6);
+    }else{
+      s=-3.2;
+      p.position.set(-6,8, 1.6);
+    }
+  }else{
+    s=-2.5
+  }
+   focusPieceGroup.scale.setScalar(3.5*PIECE_SCALE[type]);
+  gsap.to(p.position, {
+    y: s,
+    duration: 1.2,        // ⬅ slower king
+    ease: "bounce.out"
+  });
+  console.log(type,s);
+}catch (error) {
+  console.log("An error occurred:", error.message);
+}
+}
+
+/* ---------------- SCROLL ---------------- */
+ScrollTrigger.create({trigger:"#intro",onEnter:()=>{scene.background = null;scene.add(demoPiecesGroup);}});
+ScrollTrigger.create({trigger:"#king",onEnter:()=>{demoPiecesGroup.clear();dropPiece("k");
+  shift();
+}});
+ScrollTrigger.create({trigger:"#queen",onEnter:()=>dropPiece("q")});
+ScrollTrigger.create({trigger:"#rook",onEnter:()=>dropPiece("r")});
+ScrollTrigger.create({trigger:"#bishop",onEnter:()=>dropPiece("b")});
+ScrollTrigger.create({trigger:"#knight",onEnter:()=>dropPiece("n")});
+ScrollTrigger.create({trigger:"#pawn",onEnter:()=>dropPiece("p")});
+
+/* ---------------- ANIMATE ---------------- */
+function animate(){
+  focusPieceGroup.children.forEach(p=>p.rotation.y+=0.01);
+  renderer.render(scene,camera);
+  requestAnimationFrame(animate);
+}
+
+/* ---------------- INIT ---------------- */
+(async()=>{
+  await loadAll();
+  startDemo();
+  animate();
+})();
+function myFunction() {
+  var x = document.getElementById("myTopnav");
+  if (x.className === "topnav") {
+    x.className += " responsive";
+  } else {
+    x.className = "topnav";
+  }
+}
+window.addEventListener("resize",()=>{
+  camera.aspect=innerWidth/innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth,innerHeight);
+});
+</script>
+
+</body>
+</html>
