@@ -427,7 +427,6 @@ Place Bishops on long diagonals for maximum impact.</p>
     </div>
   </div>
 </section>
-
 <script type="module">
 import * as THREE from "https://esm.sh/three@0.158.0";
 import { GLTFLoader } from "https://esm.sh/three@0.158.0/examples/jsm/loaders/GLTFLoader.js";
@@ -493,7 +492,7 @@ const models = {};
 
 async function loadModel(key){
   return new Promise(res=>{
-    loader.load(`./models/${key}.glb`, g=>{
+    loader.load(`assets/chesspieces/models/${key}.glb`, g=>{
       const m = g.scene;
       m.scale.setScalar(1);
       res(m);
