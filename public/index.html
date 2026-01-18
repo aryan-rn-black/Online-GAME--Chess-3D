@@ -581,7 +581,7 @@ const models = {};
 
 async function loadModel(key){
   return new Promise(res=>{
-    loader.load(`assets/chesspieces/models/${key}.glb`, g=>{
+    loader.load(`assets/chesspieces/DarkGeo/${key}.glb`, g=>{
       const m = g.scene;
       m.scale.setScalar(1);
       res(m);
