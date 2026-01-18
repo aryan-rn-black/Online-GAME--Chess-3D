@@ -206,6 +206,74 @@ section {
     text-align: left;
   }
 }
+.site-footer {
+  background: radial-gradient(circle, #2a1808, #140a03 70%, #000);
+  border-top: 1px solid #45301b;
+  padding: 30px 20px;
+  color: #e6eef6;
+  position: relative;
+  z-index: 20;
+}
+
+.footer-inner {
+  max-width: 1200px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  text-align: center;
+}
+
+.footer-brand {
+  font-family: serif;
+  font-size: 1.8rem;
+  color: #d7b434;
+  text-shadow: 0 0 12px rgba(215,180,52,0.4);
+}
+
+.footer-brand .tagline {
+  display: block;
+  font-size: 0.9rem;
+  color: #cfc6a3;
+  margin-top: 4px;
+}
+
+.footer-links {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.footer-links a {
+  color: #e6eef6;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+.footer-links a:hover {
+  color: #d7b434;
+  text-shadow: 0 0 8px rgba(215,180,52,0.6);
+}
+
+.footer-meta {
+  font-size: 0.85rem;
+  opacity: 0.7;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Mobile tweak */
+@media (max-width: 600px) {
+  .footer-brand {
+    font-size: 1.4rem;
+  }
+}
+
 </style>
 </head>
 
@@ -427,6 +495,27 @@ Place Bishops on long diagonals for maximum impact.</p>
     </div>
   </div>
 </section>
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      ♔ Chess Online Perfect
+      <span class="tagline">Experience Chess in True 3D</span>
+    </div>
+
+    <div class="footer-links">
+      <a href="index.html">Play Online</a>
+      <a href="#about">About</a>
+      <a href="history.html">History</a>
+      <a href="review.html">Reviews</a>
+    </div>
+
+    <div class="footer-meta">
+      <span>© 2026 Chess Online Perfect</span>
+      <span>Made with ♟️ & ❤️</span>
+    </div>
+  </div>
+</footer>
+
 <script type="module">
 import * as THREE from "https://esm.sh/three@0.158.0";
 import { GLTFLoader } from "https://esm.sh/three@0.158.0/examples/jsm/loaders/GLTFLoader.js";
